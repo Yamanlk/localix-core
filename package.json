@@ -1,0 +1,32 @@
+{
+  "name": "@localix/core",
+  "version": "1.0.0",
+  "description": "\"@localix/core\" provides localized template tag.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "rimraf dist",
+    "build": "tsc -p tsconfig.build.json",
+    "semantic-release": "semantic-release"
+  },
+  "author": "Yaman Lakis",
+  "license": "ISC",
+  "keywords": [
+    "localization",
+    "i18n"
+  ],
+  "bugs": {
+    "email": "yamanlakis@gmail.com",
+    "url": "https://github.com/Yamanlk/localix-core/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/Yamanlk/localix-core",
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3"
+  }
+}
