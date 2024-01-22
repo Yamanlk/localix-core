@@ -22,7 +22,7 @@ export function localize(
     )
     .join("");
 
-  const translation = translations[id];
+  const translation = translations[_options.lower ? id.toLowerCase() : id];
 
   if (!translation) {
     return {
@@ -56,6 +56,12 @@ export interface LocalizationOptions {
    * @description json localization file path.
    */
   localizationFile: string;
+
+  /**
+   * @description transforms id's into lower case
+   * @default false
+   */
+  lower?: boolean;
 }
 
 /**
