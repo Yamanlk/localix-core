@@ -1,4 +1,5 @@
 import { readFileSync } from "fs";
+import { readLocalixrc } from "./localixrc";
 
 /**
  * @description localization map
@@ -16,17 +17,26 @@ export function localize(
   strings: TemplateStringsArray,
   ...args: any[]
 ): Record<string, string> {
+  const options = getOptions();
+
   const id = strings.raw
     .map((string, index) =>
       index === strings.raw.length - 1 ? string : string + `$${index + 1}`
     )
     .join("");
 
-  const translation = translations[_options.lower ? id.toLowerCase() : id];
+  const casing =
+    options.casing === "lower"
+      ? (id: string) => id.toLowerCase()
+      : options.casing === "upper"
+      ? (id: string) => id.toUpperCase()
+      : (id: string) => id;
+
+  const translation = translations[casing(id)];
 
   if (!translation) {
     return {
-      [_options.defaultLocale]: String.raw(strings, args),
+      [options.defaultLocale]: String.raw(strings, args),
     };
   }
 
@@ -58,18 +68,27 @@ export interface LocalizationOptions {
   localizationFile: string;
 
   /**
-   * @description transforms id's into lower case
+   * @description transforms id's into lower or upper case or leaves it as is.
    * @default false
    */
-  lower?: boolean;
+  casing?: "lower" | "upper" | "none";
 }
 
 /**
  *
- * @param options
- * @description initialize localization, reads translation file and loads it to memory.
+ * @description initialize localization based on .localixrc file, reads translation file and loads it to memory, if already initialized returns options.
  */
-export function initLocalization(options: LocalizationOptions) {
+function getOptions() {
+  if (_options) {
+    return _options;
+  }
+
+  const options = readLocalixrc();
+
+  if (!options) {
+    throw new Error(".localixrc file was not found");
+  }
+
   const localizationFile = readFileSync(options.localizationFile, {
     encoding: "utf-8",
   });
@@ -77,4 +96,6 @@ export function initLocalization(options: LocalizationOptions) {
   Object.assign(translations, JSON.parse(localizationFile));
 
   _options = options;
+
+  return _options;
 }
